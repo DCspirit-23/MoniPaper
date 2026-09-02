@@ -53,6 +53,13 @@ public partial class App : Application
             return;
         }
 
+        if (e.Args.Any(IsUiRenderArgument))
+        {
+            var renderExitCode = UiRenderTest.Run(e.Args);
+            Shutdown(renderExitCode);
+            return;
+        }
+
         if (!TryAcquireSingleInstance())
         {
             Shutdown(0);
@@ -100,6 +107,9 @@ public partial class App : Application
 
     private static bool IsSelfTestArgument(string argument) =>
         string.Equals(argument, "--self-test", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsUiRenderArgument(string argument) =>
+        string.Equals(argument, "--render-ui", StringComparison.OrdinalIgnoreCase);
 
     private bool TryAcquireSingleInstance()
     {
@@ -274,7 +284,7 @@ public partial class App : Application
     private void UpdateTrayMenu()
     {
         if (_trayToggle is not null) _trayToggle.Checked = CurrentSettings.Enabled;
-        if (_trayPause is not null) _trayPause.Enabled = !PauseState.IsPaused(DateTimeOffset.Now);
+        if (_trayPause is not null) _trayPause.Enabled = CurrentSettings.Enabled && !PauseState.IsPaused(DateTimeOffset.Now);
         if (_trayResume is not null) _trayResume.Enabled = PauseState.IsPaused(DateTimeOffset.Now);
     }
 
@@ -297,14 +307,15 @@ public partial class App : Application
 
     internal void ToggleEnabled()
     {
-        CurrentSettings.Enabled = !CurrentSettings.Enabled;
-        ApplySettings(persist: true);
+        SetEnabled(!CurrentSettings.Enabled);
     }
 
     internal void SetEnabled(bool enabled)
     {
-        if (CurrentSettings.Enabled == enabled) return;
+        if (CurrentSettings.Enabled == enabled && (enabled || !PauseState.IsPaused(DateTimeOffset.Now))) return;
         CurrentSettings.Enabled = enabled;
+        if (!enabled)
+            PauseState.Resume();
         ApplySettings(persist: true);
     }
 
@@ -360,6 +371,7 @@ public partial class App : Application
 
     internal void PauseForTenMinutes()
     {
+        if (!CurrentSettings.Enabled) return;
         PauseState.Pause(DateTimeOffset.Now);
         ApplySettings(persist: true);
     }

@@ -3,264 +3,443 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="纸感护眼 PaperCare"
         Icon="pack://application:,,,/Assets/papercare.ico"
-        Width="920" Height="680" MinWidth="780" MinHeight="560"
+        Width="460" Height="560" MinWidth="400" MinHeight="540"
         WindowStartupLocation="CenterScreen"
-        Background="#F7F1E5"
+        Background="#F7F6F3"
+        FontFamily="Microsoft YaHei UI"
+        FontSize="13"
         UseLayoutRounding="True"
         SnapsToDevicePixels="True"
         Closing="Window_OnClosing">
     <Window.Resources>
-        <SolidColorBrush x:Key="Ink" Color="#214F40" />
-        <SolidColorBrush x:Key="MutedInk" Color="#60756A" />
-        <SolidColorBrush x:Key="Card" Color="#FFFDF8" />
-        <SolidColorBrush x:Key="Line" Color="#E5DCCB" />
-        <SolidColorBrush x:Key="WarmLine" Color="#D8C7A8" />
-        <Style x:Key="CardBorder" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource Card}" />
-            <Setter Property="BorderBrush" Value="{StaticResource Line}" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="18" />
-            <Setter Property="Padding" Value="18" />
-            <Setter Property="Margin" Value="0,0,0,14" />
+        <SolidColorBrush x:Key="CanvasBrush" Color="#F7F6F3" />
+        <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="TextBrush" Color="#242A27" />
+        <SolidColorBrush x:Key="MutedBrush" Color="#66706A" />
+        <SolidColorBrush x:Key="BorderBrush" Color="#E6E8E3" />
+        <SolidColorBrush x:Key="GreenBrush" Color="#214F40" />
+        <SolidColorBrush x:Key="PaleGreenBrush" Color="#EDF3EC" />
+        <SolidColorBrush x:Key="TrackBrush" Color="#DCE2DD" />
+
+        <Style x:Key="BodyText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="FontSize" Value="14" />
         </Style>
-        <Style x:Key="SectionTitle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="17" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Foreground" Value="{StaticResource Ink}" />
-            <Setter Property="Margin" Value="0,0,0,3" />
-        </Style>
-        <Style x:Key="Caption" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="{StaticResource MutedInk}" />
+        <Style x:Key="SecondaryText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
             <Setter Property="FontSize" Value="12" />
         </Style>
+        <Style x:Key="GroupLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
         <Style x:Key="ActionButton" TargetType="Button">
-            <Setter Property="Foreground" Value="{StaticResource Ink}" />
-            <Setter Property="Background" Value="#F1E8D6" />
-            <Setter Property="BorderBrush" Value="#D7C6A8" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Padding" Value="14,8" />
-            <Setter Property="Margin" Value="4,0,0,0" />
+            <Setter Property="Padding" Value="14,7" />
+            <Setter Property="MinHeight" Value="36" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
+                        <Border x:Name="ButtonChrome"
+                                Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="10"
+                                CornerRadius="7"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonChrome" Property="Background" Value="#F1F5F1" />
+                                <Setter TargetName="ButtonChrome" Property="BorderBrush" Value="#BFCFC4" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonChrome" Property="Background" Value="#E3EEE5" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="ButtonChrome" Property="BorderBrush" Value="{StaticResource GreenBrush}" />
+                                <Setter TargetName="ButtonChrome" Property="BorderThickness" Value="2" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ButtonChrome" Property="Opacity" Value="0.45" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#E5F0E8" />
-                </Trigger>
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Opacity" Value="0.45" />
-                </Trigger>
-            </Style.Triggers>
         </Style>
-        <Style x:Key="TextureCard" TargetType="Button">
-            <Setter Property="Foreground" Value="{StaticResource Ink}" />
-            <Setter Property="Background" Value="#FAF7EF" />
-            <Setter Property="BorderBrush" Value="#E5DCCB" />
+        <Style x:Key="QuietButton" TargetType="Button" BasedOn="{StaticResource ActionButton}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Padding" Value="10,7" />
+        </Style>
+        <Style x:Key="TextureChoice" TargetType="Button">
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Padding" Value="9" />
-            <Setter Property="Margin" Value="0,0,9,9" />
+            <Setter Property="Padding" Value="5" />
+            <Setter Property="Margin" Value="2,0" />
+            <Setter Property="MinHeight" Value="66" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
+                        <Border x:Name="ChoiceChrome"
+                                Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="14"
+                                CornerRadius="8"
                                 Padding="{TemplateBinding Padding}">
-                            <ContentPresenter />
+                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ChoiceChrome" Property="Background" Value="#F3F7F3" />
+                                <Setter TargetName="ChoiceChrome" Property="BorderBrush" Value="#BFCFC4" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ChoiceChrome" Property="Background" Value="#E3EEE5" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="ChoiceChrome" Property="BorderBrush" Value="{StaticResource GreenBrush}" />
+                                <Setter TargetName="ChoiceChrome" Property="BorderThickness" Value="2" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#F1F6F1" />
-                </Trigger>
-            </Style.Triggers>
         </Style>
-        <Style x:Key="ValueSlider" TargetType="Slider">
-            <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="Margin" Value="12,0,12,0" />
-            <Setter Property="Foreground" Value="{StaticResource Ink}" />
+        <Style x:Key="SwitchStyle" TargetType="ToggleButton">
+            <Setter Property="Width" Value="46" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="MinWidth" Value="44" />
+            <Setter Property="MinHeight" Value="26" />
+            <Setter Property="Focusable" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Grid Width="44" Height="26" Margin="1">
+                            <Border x:Name="SwitchTrack" Background="#D8DFDA" BorderBrush="#C7D0C9" BorderThickness="1" CornerRadius="13" />
+                            <Ellipse x:Name="SwitchThumb" Width="20" Height="20" Fill="#FFFFFF" HorizontalAlignment="Left" Margin="3" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="SwitchTrack" Property="Background" Value="{StaticResource GreenBrush}" />
+                                <Setter TargetName="SwitchTrack" Property="BorderBrush" Value="{StaticResource GreenBrush}" />
+                                <Setter TargetName="SwitchThumb" Property="HorizontalAlignment" Value="Right" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="SwitchTrack" Property="BorderBrush" Value="#91AB9B" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="SwitchTrack" Property="BorderBrush" Value="{StaticResource GreenBrush}" />
+                                <Setter TargetName="SwitchTrack" Property="BorderThickness" Value="2" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="SwitchTrack" Property="Opacity" Value="0.45" />
+                                <Setter TargetName="SwitchThumb" Property="Opacity" Value="0.65" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
-        <Style x:Key="LabelCheckBox" TargetType="CheckBox">
-            <Setter Property="Foreground" Value="{StaticResource Ink}" />
-            <Setter Property="FontSize" Value="14" />
+        <ControlTemplate x:Key="SliderRepeatButtonTemplate" TargetType="RepeatButton">
+            <Border Background="{TemplateBinding Background}" Height="4" VerticalAlignment="Center" CornerRadius="2" />
+        </ControlTemplate>
+        <ControlTemplate x:Key="SliderThumbTemplate" TargetType="Thumb">
+            <Border Background="#FFFFFF" BorderBrush="{StaticResource GreenBrush}" BorderThickness="2" CornerRadius="8" />
+        </ControlTemplate>
+        <Style x:Key="PaperSlider" TargetType="Slider">
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Foreground" Value="{StaticResource GreenBrush}" />
+            <Setter Property="Background" Value="{StaticResource TrackBrush}" />
+            <Setter Property="Focusable" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Slider">
+                        <Grid Height="32" SnapsToDevicePixels="True">
+                            <Track x:Name="PART_Track"
+                                   Minimum="{TemplateBinding Minimum}"
+                                   Maximum="{TemplateBinding Maximum}"
+                                   Value="{TemplateBinding Value}"
+                                   IsDirectionReversed="{TemplateBinding IsDirectionReversed}"
+                                   Focusable="False"
+                                   VerticalAlignment="Center">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="Slider.DecreaseLarge"
+                                                  CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                                                  Background="{TemplateBinding Foreground}"
+                                                  BorderThickness="0"
+                                                  Template="{StaticResource SliderRepeatButtonTemplate}"
+                                                  Focusable="False" />
+                                </Track.DecreaseRepeatButton>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="Slider.IncreaseLarge"
+                                                  CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                                                  Background="{TemplateBinding Background}"
+                                                  BorderThickness="0"
+                                                  Template="{StaticResource SliderRepeatButtonTemplate}"
+                                                  Focusable="False" />
+                                </Track.IncreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Width="16" Height="16" Template="{StaticResource SliderThumbTemplate}" />
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="PART_Track" Property="Opacity" Value="0.9" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="PART_Track" Property="Opacity" Value="0.4" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SettingCombo" TargetType="ComboBox">
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="MinHeight" Value="34" />
+            <Setter Property="Padding" Value="8,4" />
+        </Style>
+        <Style x:Key="SegmentRadio" TargetType="RadioButton">
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="MinHeight" Value="36" />
+            <Setter Property="Padding" Value="8,5" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="SegmentChrome"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="7"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              TextElement.Foreground="{TemplateBinding Foreground}"
+                                              TextElement.FontWeight="{TemplateBinding FontWeight}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="SegmentChrome" Property="Background" Value="{StaticResource PaleGreenBrush}" />
+                                <Setter TargetName="SegmentChrome" Property="BorderBrush" Value="{StaticResource GreenBrush}" />
+                                <Setter Property="FontWeight" Value="SemiBold" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="SegmentChrome" Property="BorderBrush" Value="#BFCFC4" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="SegmentChrome" Property="BorderBrush" Value="{StaticResource GreenBrush}" />
+                                <Setter TargetName="SegmentChrome" Property="BorderThickness" Value="2" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="SegmentChrome" Property="Opacity" Value="0.45" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <Grid Margin="30,24,30,28">
+    <Grid Background="{StaticResource CanvasBrush}">
+        <Grid x:Name="MainPage">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0" Margin="0,0,0,18">
-                <StackPanel>
-                    <TextBlock Text="纸感护眼" FontSize="29" FontWeight="Bold" Foreground="{StaticResource Ink}" />
-                    <TextBlock Text="PaperCare · 给屏幕铺一层轻柔的纸张质感" Style="{StaticResource Caption}" Margin="1,3,0,0" />
+            <Grid Grid.Row="0" Margin="20,16,20,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="32" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Image Grid.Column="0" Source="pack://application:,,,/Assets/papercare.png" Width="32" Height="32" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" />
+                <StackPanel Grid.Column="1" Margin="12,0,8,0" VerticalAlignment="Center">
+                    <TextBlock Text="纸感护眼" Foreground="{StaticResource TextBrush}" FontSize="20" FontWeight="SemiBold" />
+                    <TextBlock x:Name="HeaderStatus" Text="未开启" Style="{StaticResource SecondaryText}" Margin="0,2,0,0" />
                 </StackPanel>
-                <Button Content="退出程序" Style="{StaticResource ActionButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Click="ExitButton_OnClick" />
+                <ToggleButton x:Name="EnabledToggle" Grid.Column="2" Style="{StaticResource SwitchStyle}"
+                              AutomationProperties.Name="启用桌面覆盖"
+                              ToolTip="启用桌面覆盖"
+                              Checked="EnabledToggle_OnChanged" Unchecked="EnabledToggle_OnChanged" />
             </Grid>
 
-            <Border Grid.Row="1" Style="{StaticResource CardBorder}" Padding="16,12">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <CheckBox x:Name="EnabledCheckBox" Grid.Column="0" Content="启用桌面覆盖" Style="{StaticResource LabelCheckBox}" Checked="EnabledCheckBox_OnChanged" Unchecked="EnabledCheckBox_OnChanged" />
-                    <TextBlock x:Name="StatusText" Grid.Column="1" Text="覆盖已关闭" Foreground="{StaticResource MutedInk}" VerticalAlignment="Center" Margin="16,0,10,0" />
-                    <Button x:Name="PauseButton" Grid.Column="2" Content="暂停 10 分钟" Style="{StaticResource ActionButton}" Click="PauseButton_OnClick" />
-                    <Button x:Name="ResumeButton" Grid.Column="3" Content="恢复" Style="{StaticResource ActionButton}" Click="ResumeButton_OnClick" IsEnabled="False" />
-                </Grid>
-            </Border>
-
-            <Grid Grid.Row="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1.05*" />
-                    <ColumnDefinition Width="1.4*" />
-                </Grid.ColumnDefinitions>
-
-                <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,7,14">
-                    <StackPanel>
-                        <TextBlock Text="选择纸张" Style="{StaticResource SectionTitle}" />
-                        <TextBlock Text="纹理会平铺到每个屏幕，强度可单独调节。" Style="{StaticResource Caption}" Margin="0,0,0,12" />
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Button x:Name="TextureCard0" Grid.Row="0" Grid.Column="0" Tag="0" Style="{StaticResource TextureCard}" Click="TextureCard_OnClick">
-                                <StackPanel><Border x:Name="TexturePreview0" Height="57" CornerRadius="9"/><TextBlock Text="细纹纸" Margin="0,8,0,1" FontWeight="SemiBold"/><TextBlock Text="均匀细腻" Style="{StaticResource Caption}"/></StackPanel>
-                            </Button>
-                            <Button x:Name="TextureCard1" Grid.Row="0" Grid.Column="1" Tag="1" Style="{StaticResource TextureCard}" Click="TextureCard_OnClick">
-                                <StackPanel><Border x:Name="TexturePreview1" Height="57" CornerRadius="9"/><TextBlock Text="棉麻纸" Margin="0,8,0,1" FontWeight="SemiBold"/><TextBlock Text="有轻微纤维感" Style="{StaticResource Caption}"/></StackPanel>
-                            </Button>
-                            <Button x:Name="TextureCard2" Grid.Row="1" Grid.Column="0" Tag="2" Style="{StaticResource TextureCard}" Click="TextureCard_OnClick">
-                                <StackPanel><Border x:Name="TexturePreview2" Height="57" CornerRadius="9"/><TextBlock Text="柔雾纸" Margin="0,8,0,1" FontWeight="SemiBold"/><TextBlock Text="平滑柔和" Style="{StaticResource Caption}"/></StackPanel>
-                            </Button>
-                            <Button x:Name="TextureCard3" Grid.Row="1" Grid.Column="1" Tag="3" Style="{StaticResource TextureCard}" Click="TextureCard_OnClick">
-                                <StackPanel><Border x:Name="TexturePreview3" Height="57" CornerRadius="9"/><TextBlock Text="夜读纸" Margin="0,8,0,1" FontWeight="SemiBold"/><TextBlock Text="沉静低亮" Style="{StaticResource Caption}"/></StackPanel>
-                            </Button>
-                        </Grid>
-                    </StackPanel>
-                </Border>
-
-                <Border Grid.Column="1" Style="{StaticResource CardBorder}" Margin="7,0,0,14">
-                    <StackPanel>
-                        <Grid>
-                            <TextBlock Text="阅读预览" Style="{StaticResource SectionTitle}" />
-                            <TextBlock Text="与桌面覆盖使用相同纹理算法" Style="{StaticResource Caption}" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                        </Grid>
-                        <Grid x:Name="ReadingPreview" Height="192" Margin="0,12,0,0">
-                            <Border Background="#FFFCF6" CornerRadius="13" BorderBrush="#D8C7A8" BorderThickness="1" />
-                            <StackPanel Margin="18" VerticalAlignment="Center">
-                                <TextBlock Text="一页安静的阅读时间" FontSize="23" FontWeight="SemiBold" Foreground="#345445" />
-                                <TextBlock Text="让内容保持清晰，让背景退到刚刚好的位置。" FontSize="13" Foreground="#60756A" Margin="0,9,0,0" TextWrapping="Wrap" />
-                                <Border Height="1" Background="#D8C7A8" Margin="0,17,0,12" />
-                                <TextBlock Text="纸感护眼会在屏幕上叠加程序生成的纸张纹理，不修改系统亮度或色彩设置。" FontSize="12" Foreground="#60756A" TextWrapping="Wrap" />
-                            </StackPanel>
-                            <Border x:Name="ReadingTextureOverlay" CornerRadius="13" IsHitTestVisible="False" />
-                        </Grid>
-                    </StackPanel>
-                </Border>
-            </Grid>
-
-            <Border Grid.Row="3" Style="{StaticResource CardBorder}">
-                <StackPanel>
-                    <TextBlock Text="效果调节" Style="{StaticResource SectionTitle}" />
-                    <TextBlock Text="三项设置彼此独立，数值越高，叠加效果越明显。" Style="{StaticResource Caption}" Margin="0,0,0,12" />
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="78" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="52" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="纸张强度" Foreground="{StaticResource Ink}" VerticalAlignment="Center" />
-                        <Slider x:Name="IntensitySlider" Grid.Row="0" Grid.Column="1" Style="{StaticResource ValueSlider}" Minimum="0" Maximum="100" TickFrequency="10" IsSnapToTickEnabled="False" ValueChanged="IntensitySlider_OnChanged" />
-                        <TextBlock x:Name="IntensityValue" Grid.Row="0" Grid.Column="2" Text="30%" Foreground="{StaticResource Ink}" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="暖色" Foreground="{StaticResource Ink}" VerticalAlignment="Center" />
-                        <Slider x:Name="WarmthSlider" Grid.Row="1" Grid.Column="1" Style="{StaticResource ValueSlider}" Minimum="0" Maximum="100" TickFrequency="10" ValueChanged="WarmthSlider_OnChanged" />
-                        <TextBlock x:Name="WarmthValue" Grid.Row="1" Grid.Column="2" Text="10%" Foreground="{StaticResource Ink}" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="压暗" Foreground="{StaticResource Ink}" VerticalAlignment="Center" />
-                        <Slider x:Name="DimSlider" Grid.Row="2" Grid.Column="1" Style="{StaticResource ValueSlider}" Minimum="0" Maximum="50" TickFrequency="5" ValueChanged="DimSlider_OnChanged" />
-                        <TextBlock x:Name="DimValue" Grid.Row="2" Grid.Column="2" Text="0%" Foreground="{StaticResource Ink}" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                    </Grid>
-                </StackPanel>
-            </Border>
-
-            <Grid Grid.Row="4">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,7,14">
-                    <StackPanel>
-                        <TextBlock Text="覆盖屏幕" Style="{StaticResource SectionTitle}" />
-                        <TextBlock Text="显示器变化后会自动重新建立覆盖层。" Style="{StaticResource Caption}" Margin="0,0,0,10" />
-                        <RadioButton x:Name="AllScreensRadio" Content="所有显示器" GroupName="Screens" Foreground="{StaticResource Ink}" Margin="0,2,0,8" Checked="AllScreensRadio_OnChecked" />
-                        <RadioButton x:Name="PrimaryScreenRadio" Content="仅主屏幕" GroupName="Screens" Foreground="{StaticResource Ink}" Checked="PrimaryScreenRadio_OnChecked" />
-                    </StackPanel>
-                </Border>
-                <Border Grid.Column="1" Style="{StaticResource CardBorder}" Margin="7,0,0,14">
-                    <StackPanel>
-                        <Grid>
-                            <TextBlock Text="休息提醒" Style="{StaticResource SectionTitle}" />
-                            <CheckBox x:Name="ReminderCheckBox" Content="开启" Style="{StaticResource LabelCheckBox}" HorizontalAlignment="Right" Checked="ReminderCheckBox_OnChanged" Unchecked="ReminderCheckBox_OnChanged" />
-                        </Grid>
-                        <TextBlock Text="只在开启提醒后开始计时，通知不会抢占当前窗口。" Style="{StaticResource Caption}" Margin="0,0,0,9" TextWrapping="Wrap" />
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="间隔" Foreground="{StaticResource Ink}" VerticalAlignment="Center" />
-                            <ComboBox x:Name="BreakComboBox" Width="96" Margin="12,0,0,0" SelectionChanged="BreakComboBox_OnChanged">
-                                <ComboBoxItem Tag="20" Content="20 分钟" />
-                                <ComboBoxItem Tag="30" Content="30 分钟" />
-                                <ComboBoxItem Tag="45" Content="45 分钟" />
-                                <ComboBoxItem Tag="60" Content="60 分钟" />
-                            </ComboBox>
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Focusable="False">
+                <StackPanel Margin="20,0,20,10">
+                    <Grid x:Name="ReadingPreviewFrame" Height="154" Margin="0,0,0,18">
+                        <Border Background="#FFFCF6" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="10" />
+                        <StackPanel Margin="16,13" VerticalAlignment="Center">
+                            <TextBlock Text="效果预览" Style="{StaticResource SecondaryText}" />
+                            <TextBlock Text="这是一段示例文字。" Foreground="#354B40" FontSize="18" FontWeight="SemiBold" Margin="0,10,0,0" />
+                            <TextBlock Text="调节强度，找到舒服的纸感。" Foreground="{StaticResource MutedBrush}" FontSize="13" Margin="0,5,0,0" />
                         </StackPanel>
-                    </StackPanel>
-                </Border>
-            </Grid>
+                        <Border x:Name="ReadingTextureOverlay" CornerRadius="10" IsHitTestVisible="False" />
+                    </Grid>
 
-            <Border Grid.Row="5" Background="#EEF5EE" BorderBrush="#D6E7D9" BorderThickness="1" CornerRadius="14" Padding="16,12" Margin="0,0,0,2">
+                    <TextBlock Text="纸张" Style="{StaticResource GroupLabel}" Margin="0,0,0,8" />
+                    <UniformGrid Columns="4" Margin="-2,0,-2,0">
+                        <Button x:Name="TextureCard0" Tag="0" Style="{StaticResource TextureChoice}" Click="TextureCard_OnClick" AutomationProperties.Name="选择细纹纸">
+                            <StackPanel>
+                                <Border x:Name="TexturePreview0" Height="32" CornerRadius="5" />
+                                <Grid Margin="1,5,1,0"><TextBlock Text="细纹纸" FontSize="12" /><TextBlock x:Name="TextureCheck0" Text="✓" Visibility="Collapsed" Foreground="{StaticResource GreenBrush}" FontWeight="Bold" HorizontalAlignment="Right" /></Grid>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="TextureCard1" Tag="1" Style="{StaticResource TextureChoice}" Click="TextureCard_OnClick" AutomationProperties.Name="选择棉麻纸">
+                            <StackPanel>
+                                <Border x:Name="TexturePreview1" Height="32" CornerRadius="5" />
+                                <Grid Margin="1,5,1,0"><TextBlock Text="棉麻纸" FontSize="12" /><TextBlock x:Name="TextureCheck1" Text="✓" Visibility="Collapsed" Foreground="{StaticResource GreenBrush}" FontWeight="Bold" HorizontalAlignment="Right" /></Grid>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="TextureCard2" Tag="2" Style="{StaticResource TextureChoice}" Click="TextureCard_OnClick" AutomationProperties.Name="选择柔雾纸">
+                            <StackPanel>
+                                <Border x:Name="TexturePreview2" Height="32" CornerRadius="5" />
+                                <Grid Margin="1,5,1,0"><TextBlock Text="柔雾纸" FontSize="12" /><TextBlock x:Name="TextureCheck2" Text="✓" Visibility="Collapsed" Foreground="{StaticResource GreenBrush}" FontWeight="Bold" HorizontalAlignment="Right" /></Grid>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="TextureCard3" Tag="3" Style="{StaticResource TextureChoice}" Click="TextureCard_OnClick" AutomationProperties.Name="选择夜读纸">
+                            <StackPanel>
+                                <Border x:Name="TexturePreview3" Height="32" CornerRadius="5" />
+                                <Grid Margin="1,5,1,0"><TextBlock Text="夜读纸" FontSize="12" /><TextBlock x:Name="TextureCheck3" Text="✓" Visibility="Collapsed" Foreground="{StaticResource GreenBrush}" FontWeight="Bold" HorizontalAlignment="Right" /></Grid>
+                            </StackPanel>
+                        </Button>
+                    </UniformGrid>
+
+                    <Grid Margin="0,18,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="IntensityLabel" Grid.Column="0" Text="纸感强度" Style="{StaticResource GroupLabel}" />
+                        <TextBlock x:Name="IntensityValue" Grid.Column="1" Text="30%" Foreground="{StaticResource GreenBrush}" FontSize="14" FontWeight="SemiBold" MinWidth="42" TextAlignment="Right" />
+                    </Grid>
+                    <Slider x:Name="IntensitySlider" AutomationProperties.LabeledBy="{Binding ElementName=IntensityLabel}" AutomationProperties.Name="纸感强度" Style="{StaticResource PaperSlider}" Minimum="0" Maximum="100" TickFrequency="10" ValueChanged="IntensitySlider_OnChanged" />
+                </StackPanel>
+            </ScrollViewer>
+
+            <Border Grid.Row="2" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="20,9,20,12">
                 <Grid>
-                    <StackPanel>
-                        <TextBlock Text="快捷键与托盘" FontWeight="SemiBold" Foreground="{StaticResource Ink}" />
-                        <TextBlock Text="Ctrl + Alt + P：开关覆盖　　Ctrl + Alt + ↑ / ↓：调节纸张强度　　关闭窗口后可从系统托盘重新打开。" Foreground="{StaticResource MutedInk}" FontSize="12" Margin="0,5,0,0" TextWrapping="Wrap" />
-                        <TextBlock x:Name="HotkeyWarning" Foreground="#A85A36" FontSize="12" Margin="0,5,0,0" TextWrapping="Wrap" Visibility="Collapsed" />
-                        <TextBlock x:Name="SettingsWarning" Foreground="#A85A36" FontSize="12" Margin="0,5,0,0" TextWrapping="Wrap" Visibility="Collapsed" />
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <StackPanel x:Name="MainWarningPanel" Grid.Row="0" Visibility="Collapsed" Margin="0,0,0,7">
+                        <TextBlock x:Name="HotkeyWarning" Foreground="#9B5039" FontSize="11.5" TextWrapping="Wrap" Visibility="Collapsed" />
+                        <TextBlock x:Name="SettingsWarning" Foreground="#9B5039" FontSize="11.5" TextWrapping="Wrap" Visibility="Collapsed" Margin="0,3,0,0" />
                     </StackPanel>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="PauseActionButton" Grid.Column="0" Content="暂停 10 分钟" Style="{StaticResource ActionButton}" HorizontalAlignment="Left" Click="PauseActionButton_OnClick" AutomationProperties.Name="暂停或恢复护眼" />
+                        <Button x:Name="MoreSettingsButton" Grid.Column="1" Content="更多设置  ›" Style="{StaticResource QuietButton}" HorizontalAlignment="Right" Click="MoreSettingsButton_OnClick" AutomationProperties.Name="打开更多设置" />
+                    </Grid>
                 </Grid>
             </Border>
         </Grid>
-    </ScrollViewer>
+
+        <Grid x:Name="SettingsPage" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Margin="14,13,20,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button x:Name="BackButton" Grid.Column="0" Content="‹  返回" Style="{StaticResource QuietButton}" Click="BackButton_OnClick" AutomationProperties.Name="返回主界面" />
+                <TextBlock Grid.Column="1" Text="更多设置" Foreground="{StaticResource TextBrush}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" Margin="8,0,0,0" />
+            </Grid>
+
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Margin="20,0,20,16">
+                    <Grid Margin="0,0,0,14">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                        <TextBlock x:Name="WarmthLabel" Grid.Column="0" Text="暖色" Style="{StaticResource GroupLabel}" />
+                        <TextBlock x:Name="WarmthValue" Grid.Column="1" Text="10%" Foreground="{StaticResource GreenBrush}" FontSize="14" FontWeight="SemiBold" MinWidth="42" TextAlignment="Right" />
+                    </Grid>
+                    <Slider x:Name="WarmthSlider" AutomationProperties.LabeledBy="{Binding ElementName=WarmthLabel}" AutomationProperties.Name="暖色" Style="{StaticResource PaperSlider}" Minimum="0" Maximum="100" TickFrequency="10" ValueChanged="WarmthSlider_OnChanged" />
+
+                    <Grid Margin="0,18,0,0">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                        <TextBlock x:Name="DimLabel" Grid.Column="0" Text="压暗" Style="{StaticResource GroupLabel}" />
+                        <TextBlock x:Name="DimValue" Grid.Column="1" Text="0%" Foreground="{StaticResource GreenBrush}" FontSize="14" FontWeight="SemiBold" MinWidth="42" TextAlignment="Right" />
+                    </Grid>
+                    <Slider x:Name="DimSlider" AutomationProperties.LabeledBy="{Binding ElementName=DimLabel}" AutomationProperties.Name="压暗" Style="{StaticResource PaperSlider}" Minimum="0" Maximum="50" TickFrequency="5" ValueChanged="DimSlider_OnChanged" />
+
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Margin="0,20,0,0" Padding="0,15,0,0">
+                        <StackPanel>
+                            <TextBlock Text="覆盖范围" Style="{StaticResource GroupLabel}" Margin="0,0,0,9" />
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                                <RadioButton x:Name="AllScreensRadio" Grid.Column="0" Content="所有显示器" GroupName="Screens" Style="{StaticResource SegmentRadio}" Margin="0,0,4,0" Checked="AllScreensRadio_OnChecked" />
+                                <RadioButton x:Name="PrimaryScreenRadio" Grid.Column="1" Content="仅主屏幕" GroupName="Screens" Style="{StaticResource SegmentRadio}" Margin="4,0,0,0" Checked="PrimaryScreenRadio_OnChecked" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Margin="0,20,0,0" Padding="0,15,0,0">
+                        <StackPanel>
+                            <Grid>
+                                <TextBlock Text="休息提醒" Style="{StaticResource GroupLabel}" />
+                                <ToggleButton x:Name="ReminderToggle" Style="{StaticResource SwitchStyle}" HorizontalAlignment="Right" AutomationProperties.Name="开启休息提醒" Checked="ReminderToggle_OnChanged" Unchecked="ReminderToggle_OnChanged" />
+                            </Grid>
+                            <Grid Margin="0,12,0,0">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                <TextBlock Text="提醒间隔" Style="{StaticResource BodyText}" VerticalAlignment="Center" />
+                                <ComboBox x:Name="BreakComboBox" Grid.Column="1" Width="112" Style="{StaticResource SettingCombo}" AutomationProperties.Name="休息提醒间隔" SelectionChanged="BreakComboBox_OnChanged">
+                                    <ComboBoxItem Tag="20" Content="20 分钟" />
+                                    <ComboBoxItem Tag="30" Content="30 分钟" />
+                                    <ComboBoxItem Tag="45" Content="45 分钟" />
+                                    <ComboBoxItem Tag="60" Content="60 分钟" />
+                                </ComboBox>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Margin="0,20,0,0" Padding="0,15,0,0">
+                        <StackPanel>
+                            <TextBlock Text="快捷键" Style="{StaticResource GroupLabel}" Margin="0,0,0,9" />
+                            <TextBlock Style="{StaticResource SecondaryText}"><Run Text="Ctrl + Alt + P" /><Run Text="   开关覆盖" /></TextBlock>
+                            <TextBlock Style="{StaticResource SecondaryText}" Margin="0,5,0,0"><Run Text="Ctrl + Alt + ↑ / ↓" /><Run Text="   调节纸感强度" /></TextBlock>
+                            <TextBlock Text="关闭窗口会继续驻留系统托盘。" Style="{StaticResource SecondaryText}" Margin="0,12,0,0" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <Border Grid.Row="2" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="20,9,20,12">
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                    <StackPanel x:Name="SettingsWarningPanel" Grid.Row="0" Visibility="Collapsed" Margin="0,0,0,7">
+                        <TextBlock x:Name="SettingsPageHotkeyWarning" Foreground="#9B5039" FontSize="11.5" TextWrapping="Wrap" Visibility="Collapsed" />
+                        <TextBlock x:Name="SettingsPageWarning" Foreground="#9B5039" FontSize="11.5" TextWrapping="Wrap" Visibility="Collapsed" Margin="0,3,0,0" />
+                    </StackPanel>
+                    <Button x:Name="SettingsExitButton" Grid.Row="1" Content="退出程序" Style="{StaticResource ActionButton}" HorizontalAlignment="Left" Click="ExitButton_OnClick" AutomationProperties.Name="退出程序" />
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
 </Window>

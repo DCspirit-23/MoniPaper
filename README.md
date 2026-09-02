@@ -9,10 +9,19 @@
 从 [Releases](https://github.com/DCspirit-23/Paper-Care/releases) 下载 Windows x64 压缩包，解压后打开 `PaperCare.exe`。这是自包含版本，无需另外安装 .NET。第一次运行时覆盖效果默认关闭。
 
 1. 选择细纹纸、棉麻纸、柔雾纸或夜读纸。
-2. 在阅读预览中调整纹理强度、暖色和压暗。
-3. 打开总开关，将效果应用到主屏幕或所有屏幕。
+2. 调整“纸感强度”，在预览中查看效果。
+3. 打开右上方的开关，将效果应用到桌面。
+
+“更多设置”包含暖色、压暗、显示器选择和休息提醒。返回主面板时保留当前设置。预览始终显示所选效果，是否应用到桌面以顶部状态为准。
 
 同时使用其他屏幕滤镜或纸张覆盖工具时，效果会叠加；比较效果时请只启用其中一种。
+
+## 界面预览
+
+以下是使用示例参数生成的 WPF 离屏预览，不包含 Windows 标题栏。
+
+<img src="docs/images/main-panel.png" width="360" alt="紧凑主面板：开关、纸张选择和强度">
+<img src="docs/images/settings-panel.png" width="360" alt="更多设置：暖色、压暗、覆盖范围和提醒">
 
 ## 日常操作
 
@@ -20,7 +29,7 @@
 | --- | --- |
 | 开启或关闭覆盖 | 面板开关、托盘菜单或 `Ctrl+Alt+P` |
 | 增强或减弱纹理 | 强度滑条或 `Ctrl+Alt+↑` / `Ctrl+Alt+↓` |
-| 临时关闭 | 暂停 10 分钟，到期自动恢复，也可提前恢复 |
+| 临时关闭 | 暂停 10 分钟，到期自动恢复；暂停期间同一按钮显示恢复操作 |
 | 收起面板 | 关闭窗口后继续在系统托盘中运行 |
 | 重新打开面板 | 托盘入口或再次打开程序 |
 | 完全退出 | 面板或托盘中的退出入口，同时移除覆盖层 |
@@ -49,7 +58,15 @@ powershell -NoProfile -File .\build-release.ps1
 
 程序输出到 `dist`，自检结果输出到 `artifacts`。分发时须保留项目 `LICENSE`、`THIRD-PARTY-NOTICES.md` 及 `licenses` 目录。
 
-需求边界见 [REQUIREMENTS.md](REQUIREMENTS.md)，实际验证范围见 [ACCEPTANCE.md](ACCEPTANCE.md)。
+生成离屏界面预览及布局、状态检查结果：
+
+```powershell
+.\dist\PaperCare.exe --render-ui
+```
+
+该模式不显示窗口，也不读取或修改当前用户设置。输出位于工作目录下的 `artifacts`；它不能替代真实鼠标、键盘及多屏测试。
+
+需求边界见 [REQUIREMENTS.md](REQUIREMENTS.md)，界面规范见 [DESIGN.md](DESIGN.md)，实际验证范围见 [ACCEPTANCE.md](ACCEPTANCE.md)。
 
 ## 许可证
 
