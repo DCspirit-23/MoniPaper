@@ -1,8 +1,8 @@
 # Third-party notices
 
-PaperCare's original source code, icon assets, and procedural textures are licensed under the MIT License in [LICENSE](LICENSE).
+MoniPaper's original source code, icon assets, and procedural textures are licensed under the MIT License in [LICENSE](LICENSE). Earlier releases used the name PaperCare.
 
-The Windows x64 self-contained v1.0.0, v1.0.1, and v1.1.0 distributions include Microsoft .NET 10.0.8 components. Their copyright and license notices are retained separately and are not replaced by PaperCare's license.
+The Windows x64 self-contained v1.0.0, v1.0.1, v1.1.0, and v1.2.0 distributions include Microsoft .NET 10.0.8 components. Their copyright and license notices are retained separately and are not replaced by MoniPaper's license.
 
 | Component | License and notices included in this distribution | Source |
 | --- | --- | --- |
@@ -15,4 +15,4 @@ WPF and Windows Forms are covered by the .NET Foundation license distributed wit
 
 Keep `LICENSE`, this file, and the `licenses` directory with redistributed binaries. When building against a different runtime version, update the runtime notices to match that distribution.
 
-PaperCare does not include PaperMan code, artwork, icons, or textures. The reference to PaperMan in the README describes the inspiration for the project; it does not imply affiliation or endorsement.
+MoniPaper does not include PaperMan code, artwork, icons, or textures. The reference to PaperMan in the README describes the inspiration for the project; it does not imply affiliation or endorsement.

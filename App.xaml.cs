@@ -72,11 +72,11 @@ public partial class App : Application
         MainWindow.SetSettingsWarning(warning);
 
         CreateTrayIcon();
-        _hotkeys = new HotkeyManager(HandleHotkey);
+        _hotkeys = new HotkeyManager(HandleHotkey, CurrentSettings.Hotkeys);
         if (_hotkeys.FailedHotkeys.Count > 0)
         {
-            MainWindow.SetHotkeyWarning("快捷键不可用：" + string.Join("、", _hotkeys.FailedHotkeys) + " 已被占用，可继续使用托盘菜单。");
-            _trayIcon?.ShowBalloonTip(5000, "纸感护眼", "部分快捷键已被其他程序占用，托盘菜单仍可使用。", Forms.ToolTipIcon.Warning);
+            MainWindow.SetHotkeyWarning("快捷键无法注册：" + string.Join("、", _hotkeys.FailedHotkeys) + "，可能已被系统或其他程序占用，可继续使用托盘菜单。");
+            _trayIcon?.ShowBalloonTip(5000, "MoniPaper", "部分快捷键已被其他程序占用，托盘菜单仍可使用。", Forms.ToolTipIcon.Warning);
         }
 
         _clockTimer = new DispatcherTimer(DispatcherPriority.Background)
@@ -134,7 +134,7 @@ public partial class App : Application
             _showSignal = null;
             _instanceMutex?.Dispose();
             _instanceMutex = null;
-            MessageBox.Show("纸感护眼无法建立单实例控制，请检查当前 Windows 用户权限。", "纸感护眼", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show("MoniPaper 无法建立单实例控制，请检查当前 Windows 用户权限。", "MoniPaper", MessageBoxButton.OK, MessageBoxImage.Warning);
             return false;
         }
     }
@@ -196,7 +196,7 @@ public partial class App : Application
         _trayIcon = new Forms.NotifyIcon
         {
             Icon = _trayIconImage,
-            Text = "纸感护眼 PaperCare",
+            Text = "MoniPaper",
             Visible = true,
             ContextMenuStrip = _trayMenu
         };
@@ -208,7 +208,7 @@ public partial class App : Application
         var resource = System.Windows.Application.GetResourceStream(
             new Uri("pack://application:,,,/Assets/papercare.ico", UriKind.Absolute));
         if (resource is null)
-            throw new InvalidOperationException("找不到 PaperCare 图标资源。");
+            throw new InvalidOperationException("找不到 MoniPaper 图标资源。");
 
         using (resource.Stream)
         using (var buffer = new MemoryStream())
@@ -234,7 +234,7 @@ public partial class App : Application
 
         if (CurrentSettings.Reminders && _nextReminderAt is { } reminderAt && now >= reminderAt)
         {
-            _trayIcon?.ShowBalloonTip(5000, "纸感护眼", "休息一下，看看远处，活动肩颈。", Forms.ToolTipIcon.Info);
+            _trayIcon?.ShowBalloonTip(5000, "MoniPaper", "休息一下，看看远处，活动肩颈。", Forms.ToolTipIcon.Info);
             do reminderAt = reminderAt.AddMinutes(CurrentSettings.BreakMinutes);
             while (reminderAt <= now);
             _nextReminderAt = reminderAt;
@@ -290,10 +290,14 @@ public partial class App : Application
 
     private void HandleHotkey(HotkeyAction action)
     {
-        if (_isExiting) return;
+        if (_isExiting || MainWindow?.IsShortcutEditorActive == true) return;
         switch (action)
         {
-            case HotkeyAction.Toggle:
+            case HotkeyAction.ShowPanel:
+                MainWindow?.ReturnToMainPanel();
+                ShowPanel();
+                break;
+            case HotkeyAction.ToggleOverlay:
                 ToggleEnabled();
                 break;
             case HotkeyAction.IncreaseIntensity:
@@ -303,6 +307,58 @@ public partial class App : Application
                 SetIntensity(CurrentSettings.Intensity - 10);
                 break;
         }
+    }
+
+    public bool TryApplyHotkeys(HotkeyConfiguration candidate, out string? error)
+    {
+        error = null;
+        if (_isExiting)
+        {
+            error = "应用正在退出，无法修改快捷键。";
+            return false;
+        }
+
+        if (candidate is null || !candidate.TryValidate(out error))
+        {
+            MainWindow?.SetHotkeyWarning(error);
+            return false;
+        }
+
+        if (_hotkeys is null)
+        {
+            error = "快捷键尚未初始化。";
+            MainWindow?.SetHotkeyWarning(error);
+            return false;
+        }
+
+        var oldSettings = CurrentSettings.Clone();
+        var proposedSettings = CurrentSettings.Clone();
+        proposedSettings.Hotkeys = candidate.Clone();
+        string? saveWarning = null;
+        var applied = _hotkeys.TryApply(
+            candidate,
+            () => proposedSettings.TrySave(out saveWarning),
+            () => oldSettings.TrySave(out _),
+            out error);
+
+        if (!applied)
+        {
+            error ??= saveWarning ?? "快捷键修改失败。";
+            MainWindow?.SetHotkeyWarning(error);
+            return false;
+        }
+
+        CurrentSettings.Hotkeys = candidate.Clone();
+        MainWindow?.SetHotkeyWarning(null);
+        MainWindow?.RefreshFromSettings(CurrentSettings, PauseState, renderPreview: false);
+        return true;
+    }
+
+    public void SetCloseToTray(bool value)
+    {
+        if (_isExiting) return;
+        CurrentSettings.CloseToTray = value;
+        ApplySettings(persist: true);
     }
 
     internal void ToggleEnabled()
@@ -385,6 +441,7 @@ public partial class App : Application
     internal void ShowPanel()
     {
         if (_isExiting || MainWindow is null) return;
+        MainWindow.ReturnToMainPanel();
         MainWindow.ShowInTaskbar = true;
         if (MainWindow.WindowState == WindowState.Minimized)
             MainWindow.WindowState = WindowState.Normal;

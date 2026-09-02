@@ -1,4 +1,6 @@
-# PaperCare icon
+# MoniPaper icon
+
+The icon was originally created for PaperCare and is retained after the rename to MoniPaper. The original generation prompt below is preserved unchanged.
 
 The icon uses an ivory folded paper sheet, a muted sage backing sheet, and three rounded reading lines on a forest-green tile. It contains no eyes, faces, or human features.
 

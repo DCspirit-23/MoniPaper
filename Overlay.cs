@@ -34,7 +34,7 @@ internal sealed class Overlay : Form
     }
     public Overlay(Rectangle bounds)
     {
-        Text = "PaperCare 纸感覆盖层";
+        Text = "MoniPaper 覆盖层";
         FormBorderStyle = FormBorderStyle.None;
         ShowInTaskbar = false;
         StartPosition = FormStartPosition.Manual;

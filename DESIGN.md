@@ -1,14 +1,14 @@
-# PaperCare interface design
+# MoniPaper interface design
 
 ## Purpose
 
-PaperCare is a small Windows utility for adjusting the reading surface of the desktop. Its interface should feel quiet, compact, and easy to understand at a glance. The primary task is choosing a paper texture and adjusting its strength.
+MoniPaper (formerly PaperCare) is a small Windows utility for adjusting the reading surface of the desktop. Its interface should feel quiet, compact, and easy to understand at a glance. The primary task is choosing a paper texture and adjusting its strength.
 
 ## Information hierarchy
 
 - The main panel contains the application identity, current status and master switch, one reading preview, four paper choices, and the strength slider.
 - A single contextual action pauses the effect or resumes it. The two actions do not appear as competing buttons.
-- A visible “更多设置” entry opens a secondary view in the same window. It contains warmth, dimming, display selection, reminders, shortcuts, and the exit action.
+- A visible “更多设置” entry opens a secondary view in the same window. It contains warmth, dimming, display selection, reminders, shortcuts, window-close behavior, and the exit action.
 - Returning to the main panel preserves settings and reminder state.
 - Error and shortcut-conflict messages remain visible without opening the secondary view.
 
@@ -18,7 +18,7 @@ PaperCare is a small Windows utility for adjusting the reading surface of the de
 - Keep the primary switch and navigation reachable at reduced height. Allow the content area to scroll when necessary, rather than clipping controls.
 - Group controls with spacing first: approximately 8 units within a group, 16–24 between groups.
 - Use one distinct paper preview. Avoid surrounding every section with its own card, border, and explanation.
-- Retain native Windows window controls, resizing, and close-to-tray behavior.
+- Retain native Windows window controls and resizing. The user chooses whether closing the window exits the app or minimizes it to the system tray; the tray option remains the default for compatibility.
 
 ## Visual language
 
@@ -43,7 +43,20 @@ PaperCare is a small Windows utility for adjusting the reading surface of the de
 
 ## Scope
 
-The redesign changes presentation and navigation. Existing texture generation, setting ranges, persistence format, hotkeys, screen coverage, tray behavior, and reminder intervals remain the functional basis.
+The interface retains the existing texture generation, setting ranges, screen coverage, and reminder intervals. Version 1.2 adds configurable shortcuts and a window-close preference while preserving older settings files.
+
+## Shortcut editing
+
+- Present three categories: show the main panel, toggle the desktop effect, and change strength. Strength has separate increase and decrease key bindings.
+- Show current bindings in settings and open a dedicated editor through “自定义”. Keep four binding fields, a restore-defaults action, an apply action, and a clear back path.
+- Clicking a field starts key capture. Escape cancels capture. Do not execute the app's existing shortcuts while actively editing its bindings.
+- A keyboard capture session exists only while recording a binding in the active editor. It ends on completion, cancellation, focus loss, hiding, or exit. It does not retain or transmit general keyboard input.
+- The binding itself is the capture button. Reuse the existing rounded, thin-border button style rather than introducing raw text boxes or a separate repeated record action.
+- Keep summary labels and binding values in distinct columns. Long custom combinations wrap inside the value column rather than overlapping the action name.
+- Edits remain a draft until applied. Duplicate or invalid combinations show a clear error. A failed registration or save preserves the previous working configuration.
+- The native registration mechanism checks whether Windows can register a combination; it does not promise to detect every application's low-level keyboard hook.
+- Keep window-close behavior separate from shortcut editing. An explicit exit command always quits the application, regardless of the close preference.
+- Use the same segmented selection style for the two close behaviors. New controls retain the established selected, disabled, error, and keyboard-focus treatment.
 
 ## Skill sequence and platform adaptation
 
