@@ -81,8 +81,8 @@ try {
     }
 
     $versionInfo = (Get-Item -LiteralPath $publishedExe).VersionInfo
-    if ($versionInfo.ProductName -ne 'MoniPaper' -or $versionInfo.FileVersion -notlike '1.2.0*') {
-        throw "可执行文件标记不符合 MoniPaper 1.2.0：$publishedExe"
+    if ($versionInfo.ProductName -ne 'MoniPaper' -or $versionInfo.FileVersion -notlike '1.2.1*') {
+        throw "可执行文件标记不符合 MoniPaper 1.2.1：$publishedExe"
     }
 
     $resolvedExe = (Resolve-Path -LiteralPath $publishedExe).Path

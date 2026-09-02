@@ -23,6 +23,7 @@ MoniPaper (formerly PaperCare) is a small Windows utility for adjusting the read
 ## Visual language
 
 - Canvas: warm near-white, such as `#F7F6F3` or `#FBFBFA`.
+- Reading preview: a slightly deeper warm gray-beige (`#E5DFD5`) so the paper effect is easier to distinguish from the canvas.
 - Primary text: charcoal, such as `#242A27`.
 - Secondary text: a readable muted gray, such as `#66706A`.
 - Borders: subtle neutral gray, such as `#E6E8E3`, only where structure or state needs them.
@@ -40,6 +41,7 @@ MoniPaper (formerly PaperCare) is a small Windows utility for adjusting the read
 - Use a native-semantic switch, radio choices, and sliders with custom WPF styles. Preserve keyboard navigation, focus indication, accessible names, and disabled states.
 - Selected paper has a persistent visual indication beyond animation. Slider percentages stay aligned.
 - Interaction feedback is brief and restrained. No continuous animation or repeated full-screen rendering is introduced.
+- Vertical scrolling uses a slim rounded thumb on a transparent track, with no arrow buttons. Keep a wider invisible drag target and retain native wheel, page, keyboard, and full-range drag behavior.
 
 ## Scope
 

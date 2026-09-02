@@ -6,7 +6,7 @@
 
 ## 开始使用
 
-从 [Releases](https://github.com/DCspirit-23/Paper-Care/releases) 下载 Windows x64 压缩包，解压后打开 `MoniPaper.exe`。这是自包含版本，无需另外安装 .NET。第一次运行时覆盖效果默认关闭。升级时请先退出仍在托盘运行的旧版 PaperCare。
+从 [Releases](https://github.com/DCspirit-23/MoniPaper/releases) 下载 Windows x64 压缩包，解压后打开 `MoniPaper.exe`。这是自包含版本，无需另外安装 .NET。第一次运行时覆盖效果默认关闭。升级时请先退出仍在托盘运行的旧版 PaperCare。
 
 1. 选择细纹纸、棉麻纸、柔雾纸或夜读纸。
 2. 调整“纸感强度”，在预览中查看效果。

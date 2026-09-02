@@ -16,9 +16,9 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Authors>DCspirit-23</Authors>
     <Copyright>Copyright (c) 2026 DCspirit-23</Copyright>
-    <RepositoryUrl>https://github.com/DCspirit-23/Paper-Care</RepositoryUrl>
+    <RepositoryUrl>https://github.com/DCspirit-23/MoniPaper</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>1.2.0</Version>
+    <Version>1.2.1</Version>
   </PropertyGroup>
   <ItemGroup>
     <Resource Include="Assets\papercare.ico" />

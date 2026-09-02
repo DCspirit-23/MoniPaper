@@ -212,6 +212,69 @@
             <Setter Property="MinHeight" Value="34" />
             <Setter Property="Padding" Value="8,4" />
         </Style>
+        <ControlTemplate x:Key="ScrollBarRepeatButtonTemplate" TargetType="RepeatButton">
+            <Border Background="Transparent" />
+        </ControlTemplate>
+        <ControlTemplate x:Key="ScrollBarThumbTemplate" TargetType="Thumb">
+            <Grid Background="Transparent">
+                <Border x:Name="ScrollThumbVisual" Width="6" HorizontalAlignment="Center" Background="#B9C2BC" CornerRadius="3" />
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="ScrollThumbVisual" Property="Background" Value="#9EAAA2" />
+                </Trigger>
+                <Trigger Property="IsDragging" Value="True">
+                    <Setter TargetName="ScrollThumbVisual" Property="Background" Value="#84968B" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <Style x:Key="MoniPaperVerticalScrollBar" TargetType="ScrollBar">
+            <Setter Property="Width" Value="12" />
+            <Setter Property="MinWidth" Value="12" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid Width="12" Background="Transparent">
+                            <Track x:Name="PART_Track"
+                                   Orientation="Vertical"
+                                   IsDirectionReversed="True"
+                                   Minimum="{TemplateBinding Minimum}"
+                                   Maximum="{TemplateBinding Maximum}"
+                                   Value="{TemplateBinding Value}"
+                                   ViewportSize="NaN"
+                                   Focusable="False">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="ScrollBar.PageUpCommand"
+                                                  CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                                                  Background="Transparent"
+                                                  BorderThickness="0"
+                                                  Focusable="False"
+                                                  Template="{StaticResource ScrollBarRepeatButtonTemplate}" />
+                                </Track.DecreaseRepeatButton>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="ScrollBar.PageDownCommand"
+                                                  CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                                                  Background="Transparent"
+                                                  BorderThickness="0"
+                                                  Focusable="False"
+                                                  Template="{StaticResource ScrollBarRepeatButtonTemplate}" />
+                                </Track.IncreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Height="60" MinHeight="60" Width="12" Template="{StaticResource ScrollBarThumbTemplate}" />
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.4" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style x:Key="SegmentRadio" TargetType="RadioButton">
             <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
             <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
@@ -284,9 +347,12 @@
             </Grid>
 
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Focusable="False">
+                <ScrollViewer.Resources>
+                    <Style TargetType="ScrollBar" BasedOn="{StaticResource MoniPaperVerticalScrollBar}" />
+                </ScrollViewer.Resources>
                 <StackPanel Margin="20,0,20,10">
                     <Grid x:Name="ReadingPreviewFrame" Height="154" Margin="0,0,0,18">
-                        <Border Background="#FFFCF6" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="10" />
+                        <Border Background="#E5DFD5" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="10" />
                         <StackPanel Margin="16,13" VerticalAlignment="Center">
                             <TextBlock Text="效果预览" Style="{StaticResource SecondaryText}" />
                             <TextBlock Text="这是一段示例文字。" Foreground="#354B40" FontSize="18" FontWeight="SemiBold" Margin="0,10,0,0" />
@@ -374,6 +440,9 @@
             </Grid>
 
             <ScrollViewer x:Name="SettingsScrollViewer" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <ScrollViewer.Resources>
+                    <Style TargetType="ScrollBar" BasedOn="{StaticResource MoniPaperVerticalScrollBar}" />
+                </ScrollViewer.Resources>
                 <StackPanel Margin="20,0,20,16">
                     <Grid Margin="0,0,0,14">
                         <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
@@ -482,6 +551,9 @@
             </Grid>
 
             <ScrollViewer x:Name="ShortcutEditorScrollViewer" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <ScrollViewer.Resources>
+                    <Style TargetType="ScrollBar" BasedOn="{StaticResource MoniPaperVerticalScrollBar}" />
+                </ScrollViewer.Resources>
                 <StackPanel Margin="20,0,20,16">
                     <TextBlock Text="点击组合键，再按下新的键位。至少包含 Ctrl、Alt 或 Shift。" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" Margin="0,0,0,15" />
 
