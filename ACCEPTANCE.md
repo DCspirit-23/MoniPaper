@@ -1,0 +1,30 @@
+# v1.0.0 验证范围
+
+## 构建与自检
+
+Windows x64 自包含发布包已完成构建，并通过以下 6 项自动检查。发布包内的 `self-test-results.json` 记录该包的真实执行结果。
+
+| 检查 | 范围 |
+| --- | --- |
+| settings-normalize | 无效设置值限制与提醒间隔规范化 |
+| settings-json-roundtrip | 隔离临时文件中的设置 JSON 往返，不覆盖用户设置 |
+| pause-boundary | 暂停结束前一刻及到期时刻的状态 |
+| texture-transparent-and-premultiplied | 全 0 时完全透明；像素满足预乘 alpha 约束 |
+| display-enumeration | Windows 显示器枚举与主屏幕存在性 |
+| small-overlay-lifecycle | 实际创建 64×48 覆盖窗口，检查 layered、transparent、no-activate、tool-window 标志及销毁 |
+
+可以运行 `build-release.ps1` 重新发布并执行这些检查。
+
+## 尚未完成的实机验证
+
+自动测试不代表全部界面流程验收通过。以下项目在 v1.0.0 发布前未完成实机交互验证：
+
+- 中文界面的视觉布局、纹理选择与滑条操作。
+- 全屏覆盖启用后的实际鼠标穿透及快捷键操作。
+- 暂停及恢复按钮、托盘菜单、单实例面板恢复与正常退出流程。
+- 修改实际用户设置后退出、重新启动的恢复效果。
+- 等待完整 20–60 分钟的休息提醒。
+- 多显示器视觉效果、不同缩放比例及显示器热插拔。
+- HDR、独占全屏、受保护的视频画面和 Windows 安全桌面。
+
+上述项目均不能用构建成功或窗口标志检查替代。

@@ -1,0 +1,8 @@
+bin/
+obj/
+dist/
+artifacts/
+.vs/
+*.user
+*.suo
+/self-test-results.json
