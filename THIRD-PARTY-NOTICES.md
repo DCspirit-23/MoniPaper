@@ -1,8 +1,8 @@
 # Third-party notices
 
-PaperCare's original source code and procedural textures are licensed under the MIT License in [LICENSE](LICENSE).
+PaperCare's original source code, icon assets, and procedural textures are licensed under the MIT License in [LICENSE](LICENSE).
 
-The Windows x64 self-contained v1.0.0 distribution includes Microsoft .NET 10.0.8 components. Their copyright and license notices are retained separately and are not replaced by PaperCare's license.
+The Windows x64 self-contained v1.0.0 and v1.0.1 distributions include Microsoft .NET 10.0.8 components. Their copyright and license notices are retained separately and are not replaced by PaperCare's license.
 
 | Component | License and notices included in this distribution | Source |
 | --- | --- | --- |

@@ -1,7 +1,4 @@
 using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -23,6 +20,7 @@ public partial class App : Application
     private Thread? _signalThread;
     private volatile bool _listenForSignal;
     private Forms.NotifyIcon? _trayIcon;
+    private DrawingIcon? _trayIconImage;
     private Forms.ContextMenuStrip? _trayMenu;
     private Forms.ToolStripMenuItem? _trayOpen;
     private Forms.ToolStripMenuItem? _trayToggle;
@@ -184,9 +182,10 @@ public partial class App : Application
         var exit = new Forms.ToolStripMenuItem("退出", null, (_, _) => Dispatcher.BeginInvoke(new Action(ExitApplication)));
         _trayMenu.Items.AddRange(new Forms.ToolStripItem[] { _trayOpen, _trayToggle, _trayPause, _trayResume, new Forms.ToolStripSeparator(), exit });
 
+        _trayIconImage = CreateTrayIconImage();
         _trayIcon = new Forms.NotifyIcon
         {
-            Icon = CreateTrayIconImage(),
+            Icon = _trayIconImage,
             Text = "纸感护眼 PaperCare",
             Visible = true,
             ContextMenuStrip = _trayMenu
@@ -196,32 +195,18 @@ public partial class App : Application
 
     private static DrawingIcon CreateTrayIconImage()
     {
-        using var bitmap = new Bitmap(32, 32, PixelFormat.Format32bppArgb);
-        using (var graphics = Graphics.FromImage(bitmap))
-        using (var path = new GraphicsPath())
-        using (var fill = new SolidBrush(Color.FromArgb(31, 83, 66)))
-        using (var paper = new SolidBrush(Color.FromArgb(250, 244, 229)))
-        using (var ink = new Pen(Color.FromArgb(31, 83, 66), 2))
-        {
-            graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            path.AddArc(3, 3, 26, 26, 0, 360);
-            path.CloseFigure();
-            graphics.FillPath(fill, path);
-            graphics.FillEllipse(paper, 8, 7, 16, 18);
-            graphics.DrawLine(ink, 11, 13, 21, 13);
-            graphics.DrawLine(ink, 11, 17, 20, 17);
-            graphics.DrawLine(ink, 11, 21, 17, 21);
-        }
+        var resource = System.Windows.Application.GetResourceStream(
+            new Uri("pack://application:,,,/Assets/papercare.ico", UriKind.Absolute));
+        if (resource is null)
+            throw new InvalidOperationException("找不到 PaperCare 图标资源。");
 
-        var handle = bitmap.GetHicon();
-        try
+        using (resource.Stream)
+        using (var buffer = new MemoryStream())
         {
-            using var source = DrawingIcon.FromHandle(handle);
-            return (DrawingIcon)source.Clone();
-        }
-        finally
-        {
-            Native.DestroyIcon(handle);
+            resource.Stream.CopyTo(buffer);
+            buffer.Position = 0;
+            using var source = new DrawingIcon(buffer);
+            return new DrawingIcon(source, source.Size);
         }
     }
 
@@ -442,6 +427,8 @@ public partial class App : Application
             _trayIcon.Dispose();
             _trayIcon = null;
         }
+        _trayIconImage?.Dispose();
+        _trayIconImage = null;
         _trayMenu?.Dispose();
         _trayMenu = null;
 

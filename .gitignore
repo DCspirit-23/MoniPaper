@@ -6,3 +6,5 @@ artifacts/
 *.user
 *.suo
 /self-test-results.json
+__pycache__/
+*.pyc

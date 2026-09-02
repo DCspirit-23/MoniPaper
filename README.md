@@ -1,5 +1,7 @@
 # 纸感护眼 · PaperCare
 
+<img src="Assets/papercare.png" width="96" alt="PaperCare 折角纸页图标">
+
 一个中文 Windows 桌面小工具：为桌面叠加轻微的纸张纹理，并提供独立的暖色和压暗调节。参考 [PaperMan](https://paperman.cc/) 的纸感覆盖方式，界面和纹理独立实现。
 
 ## 开始使用

@@ -23,7 +23,6 @@ internal static class Native
     [DllImport("user32.dll")] internal static extern bool UnregisterHotKey(IntPtr hwnd, int id);
     [DllImport("user32.dll")] internal static extern int GetWindowLong(IntPtr hwnd, int index);
     [DllImport("user32.dll")] internal static extern bool IsWindow(IntPtr hwnd);
-    [DllImport("user32.dll")] internal static extern bool DestroyIcon(IntPtr icon);
 }
 
 internal sealed class Overlay : Form
