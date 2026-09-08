@@ -18,7 +18,7 @@
     <Copyright>Copyright (c) 2026 DCspirit-23</Copyright>
     <RepositoryUrl>https://github.com/DCspirit-23/MoniPaper</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>1.2.1</Version>
+    <Version>1.3.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <Resource Include="Assets\papercare.ico" />

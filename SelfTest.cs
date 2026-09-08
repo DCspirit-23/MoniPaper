@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using Forms = System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace PaperCare;
 
@@ -106,6 +107,7 @@ internal static class SelfTest
         RunCase(cases, "settings-legacy-json-compatibility", TestLegacyJsonCompatibility, ref allPassed);
         RunCase(cases, "settings-custom-hotkeys-and-close-behavior-roundtrip", TestCustomSettingsRoundtrip, ref allPassed);
         RunCase(cases, "settings-invalid-hotkeys-preserve-legacy-values", TestInvalidHotkeysPreserveLegacyValues, ref allPassed);
+        RunCase(cases, "startup-registration-isolated-key", TestStartupRegistration, ref allPassed);
         RunCase(cases, "hotkey-successful-rebind", TestSuccessfulRebind, ref allPassed);
         RunCase(cases, "hotkey-internal-swap", TestInternalSwap, ref allPassed);
         RunCase(cases, "hotkey-registration-conflict-keeps-old-binding", TestRegistrationConflictKeepsOldBinding, ref allPassed);
@@ -257,6 +259,52 @@ internal static class SelfTest
                                            malformed.Hotkeys.ShowPanel == defaults.ShowPanel;
             return invalidPreservesLegacy && malformedPreservesLegacy;
         });
+    }
+
+    private static bool TestStartupRegistration()
+    {
+        var keyPath = @"Software\PaperCare\SelfTest-" + Guid.NewGuid().ToString("N");
+        const string otherValueName = "OtherStartupEntry";
+        try
+        {
+            using (var key = Registry.CurrentUser.CreateSubKey(keyPath, writable: true))
+                key?.SetValue(otherValueName, "keep-me", RegistryValueKind.String);
+
+            var registration = new StartupRegistration(
+                keyPath,
+                StartupRegistration.ValueName,
+                () => @"C:\Program Files\MoniPaper\MoniPaper.exe");
+            if (!registration.TryRead(out var initially, out var initialError) || initialError is not null || initially.Exists)
+                return false;
+
+            if (!registration.TrySetEnabled(true, out var enableError) || enableError is not null ||
+                !registration.TryRead(out var enabled, out var readEnabledError) || readEnabledError is not null ||
+                !enabled.Exists || enabled.Command != "\"C:\\Program Files\\MoniPaper\\MoniPaper.exe\" --startup")
+                return false;
+
+            if (!registration.TrySetEnabled(false, out var disableError) || disableError is not null ||
+                !registration.TryRead(out var disabled, out var readDisabledError) || readDisabledError is not null || disabled.Exists)
+                return false;
+
+            var unavailablePath = new StartupRegistration(keyPath, StartupRegistration.ValueName, () => null);
+            if (unavailablePath.TrySetEnabled(true, out var pathError) || string.IsNullOrWhiteSpace(pathError) ||
+                !registration.TryRead(out var afterFailure, out _) || afterFailure.Exists)
+                return false;
+
+            // A persisted preference must never override the real Windows entry.
+            var settingsJson = JsonSerializer.Serialize(new Settings { StartupEnabled = true });
+            if (settingsJson.Contains(nameof(Settings.StartupEnabled), StringComparison.Ordinal))
+                return false;
+
+            using var remaining = Registry.CurrentUser.OpenSubKey(keyPath, writable: false);
+            return remaining?.GetValue(otherValueName) as string == "keep-me";
+        }
+        finally
+        {
+            try { Registry.CurrentUser.DeleteSubKeyTree(keyPath, throwOnMissingSubKey: false); }
+            catch (IOException) { }
+            catch (UnauthorizedAccessException) { }
+        }
     }
 
     private static bool TestSuccessfulRebind()

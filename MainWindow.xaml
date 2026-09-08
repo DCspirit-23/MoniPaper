@@ -491,6 +491,16 @@
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Margin="0,20,0,0" Padding="0,15,0,0">
                         <StackPanel>
                             <Grid>
+                                <TextBlock Text="开机启动" Style="{StaticResource GroupLabel}" />
+                                <ToggleButton x:Name="StartupToggle" Style="{StaticResource SwitchStyle}" HorizontalAlignment="Right" AutomationProperties.Name="开启开机启动" Checked="StartupToggle_OnChanged" Unchecked="StartupToggle_OnChanged" />
+                            </Grid>
+                            <TextBlock Text="登录 Windows 后自动在后台运行并驻留托盘。" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" Margin="0,9,0,0" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Margin="0,20,0,0" Padding="0,15,0,0">
+                        <StackPanel>
+                            <Grid>
                                 <TextBlock Text="快捷键" Style="{StaticResource GroupLabel}" />
                                 <Button x:Name="CustomizeShortcutsButton" Content="自定义  ›" Style="{StaticResource QuietButton}" HorizontalAlignment="Right" Click="CustomizeShortcutsButton_OnClick" AutomationProperties.Name="自定义快捷键" />
                             </Grid>

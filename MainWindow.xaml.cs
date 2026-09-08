@@ -67,6 +67,7 @@ public partial class MainWindow : Window
             WarmthValue.Text = settings.Warmth + "%";
             DimValue.Text = settings.Dim + "%";
             BreakComboBox.IsEnabled = settings.Reminders;
+            StartupToggle.IsChecked = settings.StartupEnabled;
             CloseToTrayRadio.IsChecked = settings.CloseToTray;
             CloseToExitRadio.IsChecked = !settings.CloseToTray;
             CloseBehaviorHint.Text = settings.CloseToTray ? "关闭窗口后继续在系统托盘运行。" : "关闭窗口后退出 MoniPaper。";
@@ -462,6 +463,12 @@ public partial class MainWindow : Window
             _app.SetCloseToTray(false);
     }
 
+    private void StartupToggle_OnChanged(object sender, RoutedEventArgs e)
+    {
+        if (!_updating && StartupToggle.IsChecked is bool enabled)
+            _app.SetStartupEnabled(enabled);
+    }
+
     private void ShortcutCaptureOnCaptured(ShortcutGesture gesture)
     {
         SetDraftGesture(gesture);
@@ -562,7 +569,7 @@ public partial class MainWindow : Window
         var elements = shortcutEditor
             ? new FrameworkElement[] { ShortcutEditorBackButton, RecordShowPanelButton, RecordToggleOverlayButton, RecordIncreaseIntensityButton, RecordDecreaseIntensityButton, RestoreDefaultShortcutsButton, CancelShortcutButton, ApplyShortcutsButton }
             : settingsPage
-                ? new FrameworkElement[] { BackButton, WarmthSlider, DimSlider, AllScreensRadio, PrimaryScreenRadio, ReminderToggle, BreakComboBox, ShowPanelShortcutText, ToggleOverlayShortcutText, IntensityShortcutText, CustomizeShortcutsButton, CloseToTrayRadio, CloseToExitRadio, SettingsExitButton }
+                ? new FrameworkElement[] { BackButton, WarmthSlider, DimSlider, AllScreensRadio, PrimaryScreenRadio, ReminderToggle, BreakComboBox, StartupToggle, ShowPanelShortcutText, ToggleOverlayShortcutText, IntensityShortcutText, CustomizeShortcutsButton, CloseToTrayRadio, CloseToExitRadio, SettingsExitButton }
                 : new FrameworkElement[] { HeaderStatus, EnabledToggle, ReadingPreviewFrame, ReadingTextureOverlay, TextureCard0, TextureCard1, TextureCard2, TextureCard3, IntensitySlider, PauseActionButton, MoreSettingsButton };
 
         if (elements.Any(element => element.Visibility != Visibility.Visible || element.ActualWidth < 1 || element.ActualHeight < 1))
@@ -592,7 +599,7 @@ public partial class MainWindow : Window
 
         if (settingsPage)
             return ReminderToggle.IsChecked == settings.Reminders && BreakComboBox.IsEnabled == settings.Reminders &&
-                   CloseToTrayRadio.IsChecked == settings.CloseToTray;
+                   StartupToggle.IsChecked == settings.StartupEnabled && CloseToTrayRadio.IsChecked == settings.CloseToTray;
 
         var paused = settings.Enabled && pause.IsPaused(DateTimeOffset.Now);
         var expectedStatus = !settings.Enabled ? "未开启" : paused ? "暂停中" : "已开启";

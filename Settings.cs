@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace PaperCare;
 
@@ -26,6 +27,10 @@ public sealed class Settings
     public int BreakMinutes { get; set; } = 20;
     public HotkeyConfiguration Hotkeys { get; set; } = new();
     public bool CloseToTray { get; set; } = true;
+    // The registry value is the source of truth. Keep this runtime-only so a
+    // moved or externally removed startup entry is never persisted as fact.
+    [JsonIgnore]
+    public bool StartupEnabled { get; set; }
 
     public void Normalize()
     {
@@ -50,7 +55,8 @@ public sealed class Settings
         Reminders = Reminders,
         BreakMinutes = BreakMinutes,
         Hotkeys = Hotkeys?.Clone() ?? new HotkeyConfiguration(),
-        CloseToTray = CloseToTray
+        CloseToTray = CloseToTray,
+        StartupEnabled = StartupEnabled
     };
 
     public static string Folder => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PaperCare");

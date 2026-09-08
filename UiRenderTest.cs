@@ -17,9 +17,11 @@ internal static class UiRenderTest
         Directory.CreateDirectory(outputDirectory);
         var results = new List<RenderResult>();
         var captureTests = new List<CaptureResult>();
+        var trayRenders = new List<TrayRenderResult>();
         var allPassed = true;
 
         RunCaptureTests(captureTests, ref allPassed);
+        RunTrayRender(trayRenders, Path.Combine(outputDirectory, "ui-redesign-tray-menu.png"), ref allPassed);
 
         var defaults = new Settings
         {
@@ -108,7 +110,8 @@ internal static class UiRenderTest
             passed = allPassed,
             outputDirectory,
             renders = results,
-            captureTests
+            captureTests,
+            trayRenders
         };
         var resultPath = Path.Combine(outputDirectory, "ui-redesign-render-results.json");
         File.WriteAllText(resultPath, JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true }));
@@ -257,6 +260,22 @@ internal static class UiRenderTest
         }, ref allPassed);
     }
 
+    private static void RunTrayRender(ICollection<TrayRenderResult> results, string outputPath, ref bool allPassed)
+    {
+        try
+        {
+            MoniPaperMenuRenderer.RenderPreview(outputPath, enabled: true, paused: false);
+            var passed = File.Exists(outputPath) && new FileInfo(outputPath).Length > 1024;
+            results.Add(new TrayRenderResult("tray-menu", passed, outputPath, null));
+            if (!passed) allPassed = false;
+        }
+        catch (Exception ex)
+        {
+            results.Add(new TrayRenderResult("tray-menu", false, outputPath, ex.GetType().Name + ": " + ex.Message));
+            allPassed = false;
+        }
+    }
+
     private static void RunCaptureCase(ICollection<CaptureResult> results, string name, Func<bool> test, ref bool allPassed)
     {
         try
@@ -283,4 +302,5 @@ internal static class UiRenderTest
 
     private sealed record RenderResult(string Name, bool Passed, bool LayoutPassed, bool StatePassed, string OutputPath, string? Error);
     private sealed record CaptureResult(string Name, bool Passed, string? Error);
+    private sealed record TrayRenderResult(string Name, bool Passed, string OutputPath, string? Error);
 }

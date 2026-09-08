@@ -8,7 +8,7 @@ MoniPaper (formerly PaperCare) is a small Windows utility for adjusting the read
 
 - The main panel contains the application identity, current status and master switch, one reading preview, four paper choices, and the strength slider.
 - A single contextual action pauses the effect or resumes it. The two actions do not appear as competing buttons.
-- A visible “更多设置” entry opens a secondary view in the same window. It contains warmth, dimming, display selection, reminders, shortcuts, window-close behavior, and the exit action.
+- A visible “更多设置” entry opens a secondary view in the same window. It contains warmth, dimming, display selection, reminders, shortcuts, startup and window-close behavior, and the exit action.
 - Returning to the main panel preserves settings and reminder state.
 - Error and shortcut-conflict messages remain visible without opening the secondary view.
 
@@ -19,6 +19,8 @@ MoniPaper (formerly PaperCare) is a small Windows utility for adjusting the read
 - Group controls with spacing first: approximately 8 units within a group, 16–24 between groups.
 - Use one distinct paper preview. Avoid surrounding every section with its own card, border, and explanation.
 - Retain native Windows window controls and resizing. The user chooses whether closing the window exits the app or minimizes it to the system tray; the tray option remains the default for compatibility.
+- Login startup is opt-in and restores saved effects without showing the panel. Manual launches open the panel, including when an instance already runs in the tray.
+- The tray context menu shares the panel's warm canvas, forest-green accent, Chinese font, rounded selection background, and generous item spacing. Native menu keyboard navigation and existing actions remain available.
 
 ## Visual language
 

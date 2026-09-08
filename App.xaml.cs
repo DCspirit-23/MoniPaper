@@ -26,6 +26,7 @@ public partial class App : Application
     private Forms.ToolStripMenuItem? _trayToggle;
     private Forms.ToolStripMenuItem? _trayPause;
     private Forms.ToolStripMenuItem? _trayResume;
+    private readonly StartupRegistration _startupRegistration = new();
     private HotkeyManager? _hotkeys;
     private OverlayManager? _overlayManager;
     private DispatcherTimer? _clockTimer;
@@ -60,13 +61,18 @@ public partial class App : Application
             return;
         }
 
-        if (!TryAcquireSingleInstance())
+        var startupLaunch = e.Args.Any(IsStartupArgument);
+        if (!TryAcquireSingleInstance(startupLaunch))
         {
             Shutdown(0);
             return;
         }
 
         CurrentSettings = Settings.Load(out var warning);
+        if (_startupRegistration.TryRead(out var startupEntry, out var startupWarning))
+            CurrentSettings.StartupEnabled = startupEntry.Exists;
+        else if (!string.IsNullOrWhiteSpace(startupWarning))
+            warning = string.IsNullOrWhiteSpace(warning) ? startupWarning : warning + " " + startupWarning;
         _overlayManager = new OverlayManager();
         MainWindow = new MainWindow(this);
         MainWindow.SetSettingsWarning(warning);
@@ -95,8 +101,17 @@ public partial class App : Application
         SystemEvents.DisplaySettingsChanged += DisplaySettingsChanged;
         _started = true;
         ApplySettings(persist: false);
-        MainWindow.Show();
-        MainWindow.Activate();
+        if (startupLaunch)
+        {
+            // A startup launch restores the saved overlay and tray state while
+            // keeping the panel hidden until the user asks to open it.
+            MainWindow.ShowInTaskbar = false;
+        }
+        else
+        {
+            MainWindow.Show();
+            MainWindow.Activate();
+        }
     }
 
     protected override void OnExit(ExitEventArgs e)
@@ -111,14 +126,18 @@ public partial class App : Application
     private static bool IsUiRenderArgument(string argument) =>
         string.Equals(argument, "--render-ui", StringComparison.OrdinalIgnoreCase);
 
-    private bool TryAcquireSingleInstance()
+    private static bool IsStartupArgument(string argument) =>
+        string.Equals(argument, "--startup", StringComparison.OrdinalIgnoreCase);
+
+    private bool TryAcquireSingleInstance(bool startupLaunch)
     {
         try
         {
             _instanceMutex = new Mutex(true, MutexName, out var createdNew);
             if (!createdNew)
             {
-                SignalExistingInstance();
+                if (!startupLaunch)
+                    SignalExistingInstance();
                 _instanceMutex.Dispose();
                 _instanceMutex = null;
                 return false;
@@ -184,13 +203,16 @@ public partial class App : Application
 
     private void CreateTrayIcon()
     {
-        _trayMenu = new Forms.ContextMenuStrip();
-        _trayOpen = new Forms.ToolStripMenuItem("打开面板", null, (_, _) => Dispatcher.BeginInvoke(new Action(ShowPanel)));
-        _trayToggle = new Forms.ToolStripMenuItem("总开关", null, (_, _) => Dispatcher.BeginInvoke(new Action(ToggleEnabled)));
-        _trayPause = new Forms.ToolStripMenuItem("暂停 10 分钟", null, (_, _) => Dispatcher.BeginInvoke(new Action(PauseForTenMinutes)));
-        _trayResume = new Forms.ToolStripMenuItem("恢复覆盖", null, (_, _) => Dispatcher.BeginInvoke(new Action(ResumePause)));
-        var exit = new Forms.ToolStripMenuItem("退出", null, (_, _) => Dispatcher.BeginInvoke(new Action(ExitApplication)));
-        _trayMenu.Items.AddRange(new Forms.ToolStripItem[] { _trayOpen, _trayToggle, _trayPause, _trayResume, new Forms.ToolStripSeparator(), exit });
+        _trayMenu = MoniPaperMenuRenderer.CreateMenu(
+            (_, _) => Dispatcher.BeginInvoke(new Action(ShowPanel)),
+            (_, _) => Dispatcher.BeginInvoke(new Action(ToggleEnabled)),
+            (_, _) => Dispatcher.BeginInvoke(new Action(PauseForTenMinutes)),
+            (_, _) => Dispatcher.BeginInvoke(new Action(ResumePause)),
+            (_, _) => Dispatcher.BeginInvoke(new Action(ExitApplication)),
+            out _trayOpen,
+            out _trayToggle,
+            out _trayPause,
+            out _trayResume);
 
         _trayIconImage = CreateTrayIconImage();
         _trayIcon = new Forms.NotifyIcon
@@ -286,6 +308,31 @@ public partial class App : Application
         if (_trayToggle is not null) _trayToggle.Checked = CurrentSettings.Enabled;
         if (_trayPause is not null) _trayPause.Enabled = CurrentSettings.Enabled && !PauseState.IsPaused(DateTimeOffset.Now);
         if (_trayResume is not null) _trayResume.Enabled = PauseState.IsPaused(DateTimeOffset.Now);
+    }
+
+    internal void SetStartupEnabled(bool enabled)
+    {
+        if (_isExiting) return;
+
+        if (!_startupRegistration.TryRead(out var previousEntry, out var readError))
+        {
+            MainWindow?.SetSettingsWarning(readError);
+            MainWindow?.RefreshFromSettings(CurrentSettings, PauseState, renderPreview: false);
+            return;
+        }
+        var previous = previousEntry.Exists;
+        CurrentSettings.StartupEnabled = previous;
+
+        if (!_startupRegistration.TrySetEnabled(enabled, out var registrationError))
+        {
+            MainWindow?.SetSettingsWarning(registrationError);
+            MainWindow?.RefreshFromSettings(CurrentSettings, PauseState, renderPreview: false);
+            return;
+        }
+
+        CurrentSettings.StartupEnabled = enabled;
+        MainWindow?.SetSettingsWarning(null);
+        MainWindow?.RefreshFromSettings(CurrentSettings, PauseState, renderPreview: false);
     }
 
     private void HandleHotkey(HotkeyAction action)
